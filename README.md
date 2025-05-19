@@ -20,14 +20,13 @@ Plataforma web para la venta de productos asiáticos, con gestión de usuarios, 
 
 ## 🛠 Requerimietnos Funcionales
 
-Registro: Formulario público para clientes y registro privado para administradores.
-Autenticación: Inicio de sesión con JWT y cookies.
-Gestión de productos: Lectura, actualización y alta de productos con categorías e imágenes.
-Carrito de compras: Añadir/eliminar productos, calcular totales y generar PDF de compra.
-Gestión de Pedidos: Actualización de estatus de los pedidos realizados por el cliente
-Inventario:Actualizar existencias y generar reportes en PDF.
-Gestión de Contacto: Los clientes pueden enviar quejas/sugerencias mediante un formulario, con registro previo o
-sin registro.El administrador visualiza las solicitudes desde un buzón exclusivo que las detalla. El administrador puede realizar un filtrado de las solicitudes por medio del tipo: Queja o
+• Registro: Formulario público para clientes y registro privado para administradores.
+• Autenticación: Inicio de sesión con JWT y cookies.
+• Gestión de productos: Lectura, actualización y alta de productos con categorías e imágenes.
+• Carrito de compras: Añadir/eliminar productos, calcular totales y generar PDF de compra.
+• Gestión de Pedidos: Actualización de estatus de los pedidos realizados por el cliente
+• Inventario:Actualizar existencias y generar reportes en PDF.
+• Gestión de Contacto: Los clientes pueden enviar quejas/sugerencias mediante un formulario, con registro previo o sin registro.El administrador visualiza las solicitudes desde un buzón exclusivo que las detalla. El administrador puede realizar un filtrado de las solicitudes por medio del tipo: Queja o
 Sugerencia
 
 ## 🛠 Requerimientos No Funcionales
