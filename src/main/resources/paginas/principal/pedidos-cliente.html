@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{plantillas/plantilla :: head}"></head>
+<body>
+<header th:replace="~{plantillas/plantilla :: header}"></header>
+<main class="container shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+    <h1 class="text-center">Mis Pedidos</h1>
+
+    <!-- Filtrado por estatus -->
+    <form method="get" th:action="@{/tokyo/pedidos}" class="mb-3">
+        <label for="estatus">Filtrar por estado:</label>
+        <select id="estatus" name="idEstatusPedido" class="form-select form-select-sm" style="width: 130px;" onchange="this.form.submit()">
+            <option value="">Todos</option>
+            <option th:each="estatus : ${listaEstatus}" th:value="${estatus.idEstatusPedido}"
+                    th:text="${estatus.nombreEstatus}" th:selected="${estatus.idEstatusPedido == idEstatusPedido}">
+            </option>
+        </select>
+    </form>
+
+    <div th:if="${#lists.isEmpty(pedidos)}">
+        <p class="text-center">No hay pedidos en este momento.</p>
+    </div>
+
+    <div th:each="pedido : ${pedidos}" class="mb-4 p-3 border border-pink rounded">
+        <h5 th:text="'Pedido No: ' + ${pedido.idPedido}"></h5>
+        <p th:text="'Fecha: ' + ${pedido.fechaPedido}"></p>
+        <p>
+            Estado:
+            <span th:classappend="
+                ${pedido.estatusPedido.nombreEstatus == 'Pendiente' ? 'badge bg-warning text-dark' :
+                pedido.estatusPedido.nombreEstatus == 'Enviado' ? 'badge bg-primary' :
+                pedido.estatusPedido.nombreEstatus == 'Entregado' ? 'badge bg-success' : ''}"
+                  th:text="${pedido.estatusPedido.nombreEstatus}">
+            </span>
+        </p>
+        <p th:text="'Total: $' + ${#numbers.formatDecimal(pedido.totalPedido, 1, 2)}"></p>
+
+        <!-- Detalles de los productos dentro del pedido -->
+        <div th:each="detalle : ${pedido.detallePedidos}" class="d-flex align-items-center border-bottom py-3">
+            <img th:src="@{'/imagenes/' + ${detalle.producto.imagen}}" alt="Imagen producto" width="80" class="me-3 rounded">
+            <div>
+                <p class="fw-bold" th:text="'Producto: ' + ${detalle.producto.nombreProducto}"></p>
+                <p th:text="'Cantidad: ' + ${detalle.cantidadProductos}"></p>
+                <p th:text="'Subtotal: $' + ${#numbers.formatDecimal(detalle.subtotal, 1, 2)}"></p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Paginación con "Anterior" y "Siguiente" -->
+    <nav th:if="${totalPages > 1}" aria-label="Paginación" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link" th:href="@{/tokyo/pedidos(page=${currentPage - 1}, idEstatusPedido=${idEstatusPedido})}" aria-label="Anterior">
+                    <span aria-hidden="true">&laquo; Anterior</span>
+                </a>
+            </li>
+            <li class="page-item"
+                th:each="i : ${#numbers.sequence(0, totalPages - 1)}"
+                th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link" th:href="@{/tokyo/pedidos(page=${i}, idEstatusPedido=${idEstatusPedido})}" th:text="${i + 1}"></a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                <a class="page-link" th:href="@{/tokyo/pedidos(page=${currentPage + 1}, idEstatusPedido=${idEstatusPedido})}" aria-label="Siguiente">
+                    <span aria-hidden="true">Siguiente &raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</main>
+<footer th:replace="~{plantillas/plantilla :: footer}"></footer>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{plantillas/plantilla :: head}">
+    <title>Guardar Producto</title>
+</head>
+<body>
+<header th:replace="~{plantillas/plantilla :: header}"></header>
+
+<main class="container mt-5 pt-4 shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+    <h1 class="text-center mb-4">Agregar Productos</h1>
+    <h3 class="text-center mb-4">Ingrese los datos del producto que desea agregar</h3>
+
+    <!-- Formulario de registro -->
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <form th:action="@{/tokyo/administracion/producto/guardar-producto}" th:object="${producto}" method="post" enctype="multipart/form-data">
+
+                <!-- Mensaje de errores generales -->
+                <div th:if="${#fields.hasErrors('*')}" class="alert alert-danger" role="alert">
+                    <h5 class="alert-heading">¡Corrige los siguientes errores!</h5>
+                    <ul class="mb-0">
+                        <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+                    </ul>
+                </div>
+
+                <!-- Mensaje de éxito (después de redirección) -->
+                <div th:if="${modalMensaje}" class="alert alert-success" role="alert" th:text="${modalMensaje}"></div>
+
+                <!-- Campos del formulario -->
+                <div class="mb-3">
+                    <label for="nombreProducto" class="form-label">Nombre del Producto:</label>
+                    <input type="text" class="form-control" id="nombreProducto"
+                           th:field="*{nombreProducto}"
+                           required
+                           placeholder="Ej. Camiseta de algodón">
+                    <div th:if="${#fields.hasErrors('nombreProducto')}" class="text-danger"
+                         th:errors="*{nombreProducto}"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="descripcion" class="form-label">Descripción:</label>
+                    <textarea class="form-control" id="descripcion"
+                              th:field="*{descripcion}"
+                              rows="3"
+                              required
+                              placeholder="Describe las características del producto"></textarea>
+                    <div th:if="${#fields.hasErrors('descripcion')}" class="text-danger"
+                         th:errors="*{descripcion}"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="precio" class="form-label">Precio ($):</label>
+                    <input type="number" class="form-control" id="precio" step="0.01"
+                           th:field="*{precio}"
+                           required
+                           placeholder="0.00"
+                           min="0.01"
+                           max="999999.99">
+                    <div th:if="${#fields.hasErrors('precio')}" class="text-danger"
+                         th:errors="*{precio}"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="idCategoria" class="form-label">Categoría:</label>
+                    <select class="form-select" id="idCategoria"
+                            th:field="*{categoria.idCategoria}"
+                            required>
+                        <option value="-1" disabled selected>Selecciona una categoría</option>
+                        <option th:each="categoria : ${categorias}"
+                                th:value="${categoria.idCategoria}"
+                                th:text="${categoria.nombreCategoria}"></option>
+                    </select>
+                    <div th:if="${#fields.hasErrors('categoria.idCategoria')}" class="text-danger"
+                         th:errors="*{categoria.idCategoria}"></div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="imagenArchivo" class="form-label">Imagen del Producto:</label>
+                    <input type="file" class="form-control" id="imagenArchivo" name="imagenArchivo"
+                           accept="image/png, image/jpeg, image/jpg, image/gif"
+                           required>
+                    <div th:if="${#fields.hasErrors('imagen')}" class="text-danger"
+                         th:errors="*{imagen}"></div>
+                    <small class="form-text text-muted">Formatos aceptados: JPG, PNG, GIF. Tamaño máximo: 10MB</small>
+                </div>
+
+                <div class="mb-3">
+                    <label for="sku" class="form-label">SKU (Código único):</label>
+                    <input type="text" class="form-control" id="sku"
+                           th:field="*{sku}"
+                           required
+                           placeholder="Ej. PROD-001">
+                    <div th:if="${#fields.hasErrors('sku')}" class="text-danger"
+                         th:errors="*{sku}"></div>
+                </div>
+
+                <!-- Botones -->
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+                    <button type="reset" class="btn btn-outline-secondary me-md-2">
+                        <i class="bi bi-eraser"></i> Limpiar
+                    </button>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="bi bi-save"></i> Guardar Producto
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+</main>
+
+<footer th:replace="~{plantillas/plantilla :: footer}"></footer>
+</body>
+</html>

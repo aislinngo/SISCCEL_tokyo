@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{plantillas/plantilla :: head}"></head>
+<body>
+<header th:replace="~{plantillas/plantilla :: header}"></header>
+
+<main class="container text-center shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+    <h1>¡Contáctanos!</h1>
+    <p>¡Queremos escucharte!<br>Envíanos tus quejas, sugerencias o comentarios.</p>
+
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <!-- Formulario vinculado a BuzonContacto -->
+            <form th:action="@{/tokyo/contacto}" th:object="${buzon}" method="post" id="feedbackForm">
+                <div th:if="${buzon != null and #fields != null and #fields.hasErrors('*')}" class="alert alert-danger" role="alert">
+                    <h5>Errores:</h5>
+                    <ul>
+                        <li th:each="err : ${#fields.errors('*')}" th:text="${err}"></li>
+                    </ul>
+                </div>
+
+                <!-- Email -->
+                <div class="mb-3">
+                    <label for="email" class="form-label">Correo Electrónico:</label>
+                    <input type="email" class="form-control" id="email"
+                           th:field="*{email}"
+                           th:value="${session.usuarioActivo != null ? session.usuarioActivo.email : ''}"
+                           required="required"
+                           placeholder="ejemplo@dominio.com">
+                </div>
+
+                <!-- Nombre Completo -->
+                <div class="mb-3">
+                    <label for="nombre" class="form-label">Nombre Completo:</label>
+                    <input type="text" class="form-control" id="nombre"
+                           th:field="*{nombre}"
+                           th:value="${session.usuarioActivo != null ? session.usuarioActivo.nombre + ' ' + session.usuarioActivo.apellidoPaterno + ' ' + (session.usuarioActivo.apellidoMaterno != null ? session.usuarioActivo.apellidoMaterno : '') : ''}"
+                           required="required"
+                           placeholder="Ingresa tu nombre">
+                </div>
+
+                <!-- Tipo -->
+                <div class="mb-3">
+                    <label for="tipo" class="form-label">Tipo:</label>
+                    <select class="form-select" id="tipo" th:field="*{tipo}" required="required">
+                        <option value="QUEJA">Queja</option>
+                        <option value="SUGERENCIA">Sugerencia</option>
+                    </select>
+                </div>
+
+                <!-- Mensaje -->
+                <div class="mb-3">
+                    <label for="mensaje" class="form-label">Mensaje:</label>
+                    <textarea class="form-control" id="mensaje"
+                              th:field="*{mensaje}"
+                              rows="5"
+                              required="required"
+                              placeholder="Escribe tu mensaje aquí..."></textarea>
+                </div>
+
+                <button type="submit" class="btn w-100">Enviar</button>
+            </form>
+        </div>
+    </div>
+</main>
+<footer th:replace="~{plantillas/plantilla :: footer}">
+    <!-- Script para autocompletar nombre -->
+    <script>
+        document.getElementById('email').addEventListener('blur', function() {
+            const email = this.value;
+            const nombreField = document.getElementById('nombre');
+
+            if (email) {
+               fetch(`/tokyo/usuario/buscar?email=${encodeURIComponent(email)}`)
+                    .then(response => response.json())
+                    .then(usuario => {
+                        if (usuario) {
+                            nombreField.value = usuario.nombre + ' ' +
+                                              usuario.apellidoPaterno + ' ' +
+                                              (usuario.apellidoMaterno || '');
+                        }
+                    });
+            }else{}
+        });
+    </script>
+</footer>
+</body>
+</html>

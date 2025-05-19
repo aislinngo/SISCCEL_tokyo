@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{plantillas/plantilla :: head}">
+    <title>Administración de Pedidos</title>
+</head>
+<body>
+<header th:replace="~{plantillas/plantilla :: header}"></header>
+<main class="container mt-4">
+    <h1>Administración de Pedidos</h1>
+    <!-- Filtrado por estatus -->
+    <form method="get" th:action="@{/tokyo/administracion/pedido/estatus-pedidos}" class="mb-3">
+        <label for="estatus">Filtrar por estado:</label>
+        <select id="estatus" name="idEstatusPedido" class="form-select form-select-sm w-auto"
+                onchange="this.form.submit()">
+            <option value="">Todos</option>
+            <option th:each="estatus : ${listaEstatus}" th:value="${estatus.idEstatusPedido}"
+                    th:text="${estatus.nombreEstatus}" th:selected="${estatus.idEstatusPedido == idEstatusPedido}">
+            </option>
+        </select>
+    </form>
+
+    <div th:if="${#lists.isEmpty(pedidos)}">
+        <p class="text-center">No hay pedidos en este momento.</p>
+    </div>
+
+    <!-- Tabla de pedidos -->
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>No. Pedido</th>
+                <th>Fecha</th>
+                <th>Estado</th>
+                <th>Total</th>
+                <th>Actualizar Estado</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="pedido : ${pedidos}">
+                <td th:text="${pedido.idPedido}"></td>
+                <td th:text="${pedido.fechaPedido}"></td>
+                <td>
+          <span th:classappend="
+                ${pedido.estatusPedido.nombreEstatus == 'Pendiente' ? 'badge bg-warning text-dark' :
+                pedido.estatusPedido.nombreEstatus == 'Enviado' ? 'badge bg-primary' :
+                pedido.estatusPedido.nombreEstatus == 'Entregado' ? 'badge bg-success' : ''}"
+                th:text="${pedido.estatusPedido.nombreEstatus}">
+          </span>
+
+                </td>
+                <td th:text="'$' + ${#numbers.formatDecimal(pedido.totalPedido, 1, 2)}"></td>
+                <td>
+                  <form method="post" th:action="@{/tokyo/administracion/pedido/actualizar-estatus}" class="d-flex gap-2">
+                    <input type="hidden" name="idPedido" th:value="${pedido.idPedido}">
+                    <input type="hidden" name="page" th:value="${currentPage}">
+                    <input type="hidden" name="idEstatusPedidoFiltro" th:value="${idEstatusPedido}">
+
+                    <select name="idEstatusPedido" class="form-select form-select-sm w-auto">
+                      <option th:each="estatus : ${listaEstatus}" th:value="${estatus.idEstatusPedido}"
+                              th:text="${estatus.nombreEstatus}">
+                      </option>
+                    </select>
+                    <button type="submit" class="btn btn-success btn-sm">Actualizar</button>
+                  </form>
+
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Paginación -->
+    <nav th:if="${totalPages > 1}" aria-label="Paginación" class="mt-4">
+        <ul class="pagination justify-content-center">
+            <li class="page-item" th:classappend="${currentPage == 0} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/tokyo/administracion/pedido/estatus-pedidos(page=${currentPage - 1}, idEstatusPedido=${idEstatusPedido})}"
+                   aria-label="Anterior">
+                    <span aria-hidden="true">&laquo; Anterior</span>
+                </a>
+            </li>
+            <li class="page-item" th:each="i : ${#numbers.sequence(0, totalPages-1)}"
+                th:classappend="${i == currentPage} ? 'active'">
+                <a class="page-link"
+                   th:href="@{/tokyo/administracion/pedido/estatus-pedidos(page=${i}, idEstatusPedido=${idEstatusPedido})}"
+                   th:text="${i + 1}"></a>
+            </li>
+            <li class="page-item" th:classappend="${currentPage == totalPages - 1} ? 'disabled'">
+                <a class="page-link"
+                   th:href="@{/tokyo/administracion/pedido/estatus-pedidos(page=${currentPage + 1}, idEstatusPedido=${idEstatusPedido})}"
+                   aria-label="Siguiente">
+                    <span aria-hidden="true">Siguiente &raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+</main>
+<footer th:replace="~{plantillas/plantilla :: footer}"></footer>
+</body>
+</html>

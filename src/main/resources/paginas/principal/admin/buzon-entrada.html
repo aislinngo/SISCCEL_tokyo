@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{plantillas/plantilla :: head}"></head>
+<body>
+<header th:replace="~{plantillas/plantilla :: header}"></header>
+
+<main class="container text-center shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+    <h1>Buzón de Entrada</h1>
+
+    <!-- Formulario de filtrado: se envía automáticamente al cambiar la selección -->
+    <form method="get" th:action="@{/tokyo/administracion/usuario/buzon-entrada}">
+        <div class="select-left">
+            <label for="tipoFiltro">Filtrar por Tipo:</label>
+            <select id="tipoFiltro" name="tipo" class="form-select form-select-sm w-auto" onchange="this.form.submit()">
+                <option value=""
+                        th:selected="${tipoSeleccionado == null or tipoSeleccionado == ''}">Todos</option>
+                <option value="QUEJA"
+                        th:selected="${tipoSeleccionado == 'QUEJA'}">Queja</option>
+                <option value="SUGERENCIA"
+                        th:selected="${tipoSeleccionado == 'SUGERENCIA'}">Sugerencia</option>
+            </select>
+        </div>
+    </form>
+
+    <!-- Listado de buzones -->
+    <table class="table table-striped mt-4">
+        <thead>
+        <tr>
+            <th style="width: 15%;">Fecha</th>
+            <th style="width: 15%;">Nombre</th>
+            <th style="width: 15%;">Email</th>
+            <th style="width: 10%;">Tipo</th>
+            <th style="width: 35%;">Mensaje</th>
+            <th style="width: 10%;">Estado</th>
+        </tr>
+        </thead>
+        <tbody>
+        <!-- Se itera sobre el contenido de la página -->
+        <tr th:each="buzon : ${page.content}">
+            <td th:text="${#temporals.format(buzon.fecha, 'dd/MM/yyyy HH:mm:ss')}"></td>
+            <td th:text="${buzon.nombre}"></td>
+            <td th:text="${buzon.email}"></td>
+            <td th:text="${buzon.tipo}"></td>
+            <td th:text="${buzon.mensaje}"></td>
+            <td th:text="${buzon.estado}"></td>
+        </tr>
+        </tbody>
+    </table>
+
+    <!-- Paginación -->
+    <nav aria-label="Paginación">
+        <ul class="pagination justify-content-center">
+            <!-- Botón "Anterior" -->
+            <li class="page-item" th:classappend="${page.first} ? 'disabled'">
+                <a class="page-link" th:href="@{/tokyo/administracion/usuario/buzon-entrada(page=${page.number - 1}, tipo=${tipoSeleccionado})}" aria-label="Anterior">
+                    <span aria-hidden="true">&laquo; Anterior</span>
+                </a>
+            </li>
+            <!-- Número de página -->
+            <li class="page-item"
+                th:each="i : ${#numbers.sequence(0, page.totalPages - 1)}"
+                th:classappend="${i == page.number} ? 'active'">
+                <a class="page-link" th:href="@{/tokyo/administracion/usuario/buzon-entrada(page=${i}, tipo=${tipoSeleccionado})}" th:text="${i + 1}">1</a>
+            </li>
+            <!-- Botón "Siguiente" -->
+            <li class="page-item" th:classappend="${page.last} ? 'disabled'">
+                <a class="page-link" th:href="@{/tokyo/administracion/usuario/buzon-entrada(page=${page.number + 1}, tipo=${tipoSeleccionado})}" aria-label="Siguiente">
+                    <span aria-hidden="true">Siguiente &raquo;</span>
+                </a>
+            </li>
+        </ul>
+    </nav>
+
+</main>
+
+<footer th:replace="~{plantillas/plantilla :: footer}"></footer>
+</body>
+</html>

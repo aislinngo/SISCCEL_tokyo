@@ -1,0 +1,112 @@
+html {
+    height: 100%;
+}
+
+/* Fondo del navbar */
+.custom-navbar {
+    background-color: #ffb7c5 !important; /* Color de fondo */
+}
+
+/* Fondo y configuración del body */
+body {
+    background-color: #ffdef2;
+    background-image: url('/images/sakura-background.png');
+    background-repeat: repeat;
+    background-size: auto;
+    background-attachment: fixed;
+    height: 100vh;
+    margin: 0;
+    padding: 0;
+    padding-top: 70px; /* Para evitar que el contenido se monte sobre el navbar */
+}
+
+/* Estilo de botones */
+.container .btn {
+    display: block;
+    margin: 0 auto;
+    background-color: #d3d3d3;
+    color: black;
+    font-size: 16px;
+    padding: 16px 30px;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.container .btn:hover {
+    background-color: black;
+    color: white;
+}
+
+/* Estilo del modal */
+#modalMensaje .modal-content {
+    background-color: #d3d3d3;
+    border-radius: 10px;
+}
+
+/* Navbar: mantener en una fila y alinear los elementos */
+.navbar-nav {
+    display: flex;
+    align-items: center;
+}
+
+.nav-item {
+    margin-right: 10px;
+}
+
+/* Ajusta el tamaño de los campos de entrada */
+.form-control {
+    width: 50%; /* Reduce el ancho al 50% del contenedor */
+    max-width: 400px; /* Limita el ancho máximo a 400px */
+    margin: 0 auto; /* Centra horizontalmente */
+    font-size: 16px; /* Ajusta el tamaño de la fuente */
+    padding: 8px; /* Espaciado dentro del input */
+}
+
+/* CARDS HOME PRODUCTOS PRINCIPAL CLIENTE*/
+
+.card {
+    transition: all 0.3s;
+    border: 1px solid #dee2e6;
+}
+
+.card:hover {
+    box-shadow: 0 .5rem 1rem rgba(0,0,0,.15)!important;
+}
+
+.section-products {
+    padding: 5rem 0;
+}
+
+.card-description {
+    font-size: 14px;
+}
+
+/*SELECT A LA IZQUIERDA*/
+.select-left {
+    display: flex;
+    align-items: center; /* Asegura que estén alineados en altura */
+    gap: 10px; /* Espacio entre el label y el select (ajústalo según necesites) */
+}
+
+
+
+
+
+
+/* Estilo específico para los botones pequeños */
+.btn.btn-primary.btn-sm {
+    width: auto; /* Permitir tamaño automático según contenido */
+    lenght: 30%;
+    padding: 8px 12px; /* Reducir altura ajustando padding vertical */
+    font-size: 0.875rem; /* Ajustar tamaño del texto */
+}
+
+
+.border-pink {
+    border: 2px solid #ffc0cb !important; /* Rosa claro */
+    padding: 15px;
+    border-radius: 8px;
+}
+

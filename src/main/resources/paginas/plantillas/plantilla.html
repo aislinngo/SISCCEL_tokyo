@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      lang="es">
+<head th:fragment="head">
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Bootstrap CSS -->
+    <link th:href="@{/bootstrap/css/bootstrap.min.css}" rel="stylesheet">
+    <!-- Iconos Bootstrap -->
+    <link th:href="@{/iconos/bootstrap-icons.css}" rel="stylesheet">
+    <!-- Estilo personalizado -->
+    <link th:href="@{/tema/miestilo.css}" rel="stylesheet">
+    <title>Tokyo</title>
+</head>
+<body>
+<header th:fragment="header">
+    <main>
+        <div id="mensajeExito" th:if="${mensajeExito}" class="alert alert-success text-center"
+             role="alert" th:text="${mensajeExito}"></div>
+        <div id="mensajeError" th:if="${error}" class="alert alert-danger text-center"
+             role="alert" th:utext="${error}"></div>
+    </main>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-lg custom-navbar fixed-top">
+        <div class="container-fluid">
+            <!-- Logo y botón de menú colapsable -->
+            <a th:href="@{/tokyo/}" class="navbar-brand">
+                <img th:src="@{/images/flor-cerezo.png}" alt="Logo" width="30" height="30" class="d-inline-block align-text-top">
+                Tokyo
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu" aria-controls="menu" aria-expanded="false" aria-label="Mostrar/Ocultar Menú">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <!-- Menú principal -->
+            <div class="collapse navbar-collapse" id="menu">
+                <!-- Menú izquierda CLIENTES -->
+                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+<!--                    <li class="nav-item">-->
+<!--                        <a class="nav-link" th:href="@{/tokyo/productos}">Productos</a>-->
+<!--                    </li>-->
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/tokyo/contacto}">Contacto <i class="bi bi-telephone-fill"></i></a>
+                    </li>
+                </ul>
+
+<!--                MENÚ IZQUIERDA ADMIINISTRADOR-->
+
+                <!-- Menú "Clientes" en usuario Administrador-->
+
+                    <!-- Menú izquierda CLIENTES -->
+<!--                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">-->
+<!--                        <li class="nav-item dropdown" sec:authorize="hasAuthority('Administrador')">-->
+<!--                            <a class="nav-link dropdown-toggle" id="dropdown-clientes-admin" role="button" data-bs-toggle="dropdown" aria-expanded="false">-->
+<!--                                Clientes-->
+<!--                            </a>-->
+<!--                            <ul class="dropdown-menu" aria-labelledby="dropdown-clientes-admin">-->
+<!--                                <li><a class="dropdown-item" th:href="@{/tokyo/administracion/usuario/buzon-entrada}">Buzón</a></li>-->
+<!--                            </ul>-->
+<!--                        </li>-->
+<!--                    </ul>-->
+
+
+
+                <!-- Menú derecha -->
+                <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+                    <li class="nav-item">
+                        <a class="nav-link" th:href="@{/tokyo/carrito}"><i class="bi bi-bag-fill"></i> Carrito</a>
+                    </li>
+
+                    <!-- Menú de usuario -->
+                    <li class="nav-item dropdown" sec:authorize="isAuthenticated()">
+                        <a class="nav-link dropdown-toggle" id="dropdown-usuario" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle"></i> <span th:text="${#authentication.principal.nombre}"></span>
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="dropdown-usuario">
+                            <li>
+                                <a class="dropdown-item" th:href="@{/tokyo/pedidos}">Pedidos</a>
+                            </li>
+                            <li>
+                                <form th:action="@{/logout}" method="post">
+                                    <button type="submit" class="dropdown-item">Cerrar sesión</button>
+                                </form>
+                            </li>
+                        </ul>
+                    </li>
+
+                    <!-- Menú de inicio de sesión -->
+                    <li class="nav-item dropdown" sec:authorize="!isAuthenticated()">
+                        <a class="nav-link dropdown-toggle" id="dropdown-login" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-person-circle"></i> Iniciar Sesión
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="dropdown-login">
+                            <li><a class="dropdown-item" th:href="@{/tokyo/inicio-sesion}">Iniciar sesión</a></li>
+                            <li><a class="dropdown-item" th:href="@{/tokyo/registro}">¡Regístrate!</a></li>
+<!--                            <li><a class="dropdown-item" th:href="@{/tokyo/administracion/usuario/registro-admin}">Registro Admin</a></li>-->
+                        </ul>
+                    </li>
+
+
+                    <!-- Menú de administración (solo para Administrador) -->
+                    <li class="nav-item dropdown" sec:authorize="hasAuthority('Administrador')">
+                        <a class="nav-link dropdown-toggle" id="dropdown-administracion" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            <i class="bi bi-gear-fill"></i> Administración
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="dropdown-administracion">
+                            <li><a class="dropdown-item" th:href="@{/tokyo/administracion/producto/ver-guardar-categoria}">Agregar Categorías</a></li>
+                            <li><a class="dropdown-item" th:href="@{/tokyo/administracion/usuario/registro-admin}">Registro Admin</a></li>
+                            <li><a class="dropdown-item" th:href="@{/tokyo/administracion/usuario/guardar-perfil}">Agregar Perfiles</a></li>
+                            <li><a class="dropdown-item" th:href="@{/tokyo/administracion/pedido/ver-guardar-estatus-pedido}">Agregar Estatus Pedidos</a></li>
+                            <li><a class="dropdown-item" th:href="@{/tokyo/administracion/producto/guardar-producto}">Registro Productos</a></li>
+                            <li><a class="dropdown-item" th:href="@{/tokyo/administracion/usuario/buzon-entrada}">Buzón</a></li>
+                            <li><a class="dropdown-item" th:href="@{/tokyo/administracion/inventario/ver}">Inventario</a></li>
+                            <li><a class="dropdown-item" th:href="@{/tokyo/administracion/pedido/estatus-pedidos}">Administración Pedidos</a></li>
+                        </ul>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+
+<footer th:fragment="footer">
+    <div class="container text-center">
+        <p><i class="bi bi-c-circle"></i> 2025 Tokyo Radiance All Rights Reserved</p>
+    </div>
+
+    <!-- Modal para mensajes -->
+    <div class="modal fade" id="modalMensaje" tabindex="-1" aria-labelledby="modalMensajeLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="modalMensajeLabel">Mensaje</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <p th:text="${modalMensaje}"></p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script th:src="@{/bootstrap/js/bootstrap.bundle.min.js}"></script>
+    <script th:inline="javascript">
+        document.addEventListener("DOMContentLoaded", function() {
+            const modalMensaje = /*[[${modalMensaje}]]*/ null;
+            if (modalMensaje) {
+                const modal = new bootstrap.Modal(document.getElementById('modalMensaje'));
+                modal.show();
+            }
+        });
+    </script>
+</footer>
+</body>
+</html>

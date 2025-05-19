@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{plantillas/plantilla :: head}"></head>
+<body>
+<header th:replace="~{plantillas/plantilla :: header}"></header>
+<main class="container shadow-lg p-3 mb-5 bg-body-tertiary rounded">
+  <h1 class="text-center">Resumen de tu pedido</h1>
+
+  <div th:if="${#lists.isEmpty(carrito)}">
+    <p class="text-center">No hay productos en tu carrito.</p>
+  </div>
+
+  <div th:if="${not #lists.isEmpty(carrito)}">
+    <table class="table table-striped">
+      <thead>
+      <tr>
+        <th>Imagen</th>
+        <th>Producto</th>
+        <th>Cantidad</th>
+        <th>Subtotal</th>
+      </tr>
+      </thead>
+      <tbody>
+      <tr th:each="item : ${carrito}">
+        <td>
+          <img th:src="@{'/imagenes/' + ${item.producto.imagen}}" alt="Imagen producto" width="50">
+        </td>
+        <td th:text="${item.producto.nombreProducto}"></td>
+        <td th:text="${item.cantidadProductos}"></td>
+        <td th:text="'$' + ${#numbers.formatDecimal(item.subtotal, 1, 2)}"></td>
+      </tr>
+      </tbody>
+    </table>
+
+    <div class="mt-3 text-end">
+      <h4>Total:
+        <strong th:text="${#numbers.formatDecimal(#aggregates.sum(carrito.![subtotal]), 0, 'COMMA', 2, 'POINT') !=
+                null ? '$' + #numbers.formatDecimal(#aggregates.sum(carrito.![subtotal]), 0, 'COMMA', 2, 'POINT') : '$0.00'}"></strong>
+      </h4>
+    </div>
+
+    <div class="card mt-4">
+      <div class="card-body bg-white">
+        <h4 class="card-title">Dirección de envío:</h4>
+        <p class="card-text" th:text="${usuario.direccion}"></p>
+      </div>
+    </div>
+
+    <div class="d-flex justify-content-between mt-4">
+      <!-- Botón para regresar al carrito -->
+      <a class="btn btn-secondary btn-lg me-2" th:href="@{/tokyo/carrito}">Regresar al carrito</a>
+
+      <!-- Botón para confirmar compra -->
+      <form th:action="@{/tokyo/confirmar-pedido}" method="post">
+        <button type="submit" class="btn btn-success btn-lg">Confirmar compra</button>
+      </form>
+    </div>
+  </div>
+</main>
+<footer th:replace="~{plantillas/plantilla :: footer}"></footer>
+</body>
+</html>
+

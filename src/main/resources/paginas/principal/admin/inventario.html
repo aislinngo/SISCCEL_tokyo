@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="es">
+<head th:replace="~{plantillas/plantilla :: head}">
+    <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet"/>
+    <title>Inventario de Productos</title>
+</head>
+<body>
+<header th:replace="~{plantillas/plantilla :: header}"></header>
+<main class="container mt-4">
+    <h1>Inventario</h1>
+
+    <!-- Mensaje Flash de éxito -->
+    <div th:if="${message}" class="alert alert-success" th:text="${message}"></div>
+
+    <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
+        <form id="filtroForm" th:action="@{/tokyo/administracion/inventario/ver}" method="get">
+            <div class="d-flex align-items-center">
+                <label for="idCategoria" class="form-label me-2">Filtrar por categoría:</label>
+                <select id="idCategoria" name="idCategoria" class="form-select" style="width: 200px; font-size: 14px; padding: 6px;" onchange="this.form.submit()">
+                    <option value="0" th:selected="${idCategoriaSeleccionada == 0}">Todas</option>
+                    <option th:each="cat : ${categorias}"
+                            th:value="${cat.idCategoria}"
+                            th:text="${cat.nombreCategoria}"
+                            th:selected="${idCategoriaSeleccionada != 0 and idCategoriaSeleccionada == cat.idCategoria}">
+                    </option>
+                </select>
+                <!-- Botón para generar PDF -->
+                <a  class="btn btn-primary btn-sm mt-1"
+                   th:href="@{'/tokyo/administracion/inventario/generar-pdf'(idCategoria=${idCategoriaSeleccionada}, format='pdf')}"
+                   target="_blank">
+                    Generar PDF
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <!-- Lista de productos con información de inventario -->
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Imagen</th>
+                <th>Producto</th>
+                <th>SKU</th>
+                <th>Existencias Actual</th>
+                <th>Nueva Cantidad</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="producto : ${productosPage.content}">
+                <td>
+                    <img th:src="@{'/imagenes/' + ${producto.imagen}}" alt="Imagen" width="50">
+                </td>
+                <td th:text="${producto.nombreProducto}"></td>
+                <td th:text="${producto.sku}"></td>
+                <td th:text="${inventoryMap[producto.idProducto] != null ? inventoryMap[producto.idProducto] : 0}">0</td>
+                <td>
+                    <form th:action="@{/tokyo/administracion/inventario/actualizar}" method="post">
+                        <input type="hidden" name="idProducto" th:value="${producto.idProducto}" />
+                        <input type="hidden" name="page" th:value="${productosPage.number}" />
+                        <input type="hidden" name="idCategoria" th:value="${idCategoriaSeleccionada}" />
+                        <input type="number" name="nuevaCantidad" class="form-control" min="0" placeholder="Cantidad" required/>
+                        <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+                        <button type="submit" class="btn btn-primary btn-sm mt-1">Actualizar</button>
+                    </form>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Paginación -->
+    <th:block th:if="${productosPage.totalPages > 1}">
+        <nav aria-label="Paginación">
+            <ul class="pagination justify-content-center">
+                <li class="page-item" th:classappend="${productosPage.hasPrevious()} ? '' : 'disabled'">
+                    <a class="page-link" th:href="@{'/tokyo/administracion/inventario/ver'(page=${productosPage.number - 1}, idCategoria=${idCategoriaSeleccionada})}">&laquo;</a>
+                </li>
+                <li class="page-item" th:each="i : ${#numbers.sequence(0, productosPage.totalPages - 1)}"
+                    th:classappend="${productosPage.number == i} ? 'active' : ''">
+                    <a class="page-link" th:href="@{'/tokyo/administracion/inventario/ver'(page=${i}, idCategoria=${idCategoriaSeleccionada})}" th:text="${i + 1}"></a>
+                </li>
+                <li class="page-item" th:classappend="${productosPage.hasNext()} ? '' : 'disabled'">
+                    <a class="page-link" th:href="@{'/tokyo/administracion/inventario/ver'(page=${productosPage.number + 1}, idCategoria=${idCategoriaSeleccionada})}">&raquo;</a>
+                </li>
+            </ul>
+        </nav>
+    </th:block>
+</main>
+<footer th:replace="~{plantillas/plantilla :: footer}">
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            $('#idCategoria').select2();
+        });
+    </script>
+</footer>
+</body>
+</html>
